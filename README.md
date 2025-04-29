@@ -41,7 +41,7 @@ You’ll generate a beautiful HTML report showing:
 Clone the repo and set up your environment:
 
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
+git clone git@github.com:gpenessot/real-time-bitcoin-quarto-report.git
 cd your-repo-name
 python -m venv venv
 source venv/bin/activate  # or .\venv\Scripts\activate on Windows

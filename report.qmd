@@ -1,0 +1,187 @@
+---
+title: "Automated Reporting: Real-Time Bitcoin Analysis with Quarto"
+format: 
+  html:
+    code-fold: true
+    code-summary: "Show code"
+execute:
+  echo: true
+  eval: true
+  freeze: false
+jupyter: python3
+---
+
+# 📈 Introduction
+
+In this report, we retrieve real-time Bitcoin (BTC) prices using the Coinbase API and analyze the data with an interactive **Candlestick** chart.
+
+The goal is to automate the generation of clear, replicable, and actionable financial reports.
+
+---
+
+# 🧐 Understanding Candlestick Charts
+
+A **candlestick chart** is used to represent the price movement of an asset over a given time period.
+
+Each candlestick provides 4 key pieces of information:
+
+- **Open** (opening price)
+- **High** (highest price)
+- **Low** (lowest price)
+- **Close** (closing price)
+
+It helps us observe:
+
+- The **market direction** (uptrend/downtrend)
+- **Volatility**
+- **Buying and selling pressures**
+
+Candlestick charts are valuable for detecting patterns, identifying trend reversals, and measuring the strength of market movements.
+
+---
+
+# 🔗 Data Source
+
+The data is fetched from the public **Coinbase Exchange API**.
+
+For each minute, we obtain:
+
+- Open, high, low, and close prices
+- Traded volume
+
+Period analyzed: **Last 10 minutes**.
+
+This data is used to quickly assess the short-term trend of the market.
+
+---
+
+# 🛠️ Data Retrieval and Visualization
+
+## 🔹 Data Retrieval
+
+We use the `requests` library to send an HTTP request to the Coinbase Exchange API.  
+The API returns historical Bitcoin price data in JSON format.  
+We then convert it into a `pandas` DataFrame for easier manipulation: sorting by time, timestamp conversion, and clear column structuring (open, high, low, close, volume).  
+This step prepares the raw data for efficient visualization and analysis.
+
+```{python}
+#| label: "Data Retrieval"
+#| echo: true
+
+import requests
+import pandas as pd
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from datetime import datetime, timedelta
+
+# Parameters
+product_id = 'BTC-USD'
+granularity = 60  # 1 minute
+end_time = datetime.utcnow()
+start_time = end_time - timedelta(minutes=10)
+
+# Coinbase API
+url = f'https://api.exchange.coinbase.com/products/{product_id}/candles'
+params = {
+    'start': start_time.isoformat(),
+    'end': end_time.isoformat(),
+    'granularity': granularity
+}
+
+# Fetch data
+response = requests.get(url, params=params)
+data = response.json()
+
+# Build DataFrame
+df = pd.DataFrame(data, columns=['time', 'low', 'high', 'open', 'close', 'volume'])
+df['time'] = pd.to_datetime(df['time'], unit='s')
+df.sort_values('time', inplace=True)
+```
+
+## 🔹 Interactive Visualization
+
+To better understand market fluctuations, we create an interactive visualization with `plotly`.  
+A candlestick chart is used to display the price evolution, while a bar chart shows traded volumes.  
+We use `make_subplots` to overlay both visualizations, sharing the same time axis for easier interpretation.  
+This layout is widely adopted in financial analysis.
+
+```{python}
+#| label: "Candlestick and Volume Chart"
+#| echo: true
+
+fig = make_subplots(rows=2, cols=1, shared_xaxes=True,
+                    vertical_spacing=0.02,
+                    row_heights=[0.7, 0.3])
+
+fig.add_trace(go.Candlestick(
+    x=df['time'],
+    open=df['open'],
+    high=df['high'],
+    low=df['low'],
+    close=df['close']
+), row=1, col=1)
+
+fig.add_trace(go.Bar(
+    x=df['time'],
+    y=df['volume'],
+    marker_color='LightSkyBlue',
+    name='Volume'
+), row=2, col=1)
+
+fig.update_layout(
+    title='Bitcoin Price Evolution (BTC-USD) over the Last 10 Minutes',
+    xaxis_title='Time',
+    yaxis_title='Price (USD)',
+    xaxis2_title='Time',
+    yaxis2_title='Volume',
+    xaxis_rangeslider_visible=False
+)
+
+fig.show()
+```
+
+## 🔹 Macro Trend Analysis
+
+After visualizing the data, we conduct a quick descriptive analysis of Bitcoin’s behavior over the observed period.  
+We calculate the percentage variation between the first and last closing prices, the maximum price amplitude, and the total traded volume.  
+This macro-analysis quickly reveals whether the market is trending upward or downward, the level of volatility, and the trading activity.
+
+```{python}
+#| label: "Quick Analysis"
+#| echo: true
+
+start_price = df.iloc[0]['close']
+end_price = df.iloc[-1]['close']
+variation = ((end_price - start_price) / start_price) * 100
+
+high_price = df['high'].max()
+low_price = df['low'].min()
+amplitude = high_price - low_price
+
+total_volume = df['volume'].sum()
+```
+
+---
+
+# 📜 Quick Interpretation
+
+- **Variation of `{python} f"{variation:.2f}%"`** over 10 minutes indicates a `{python} 'positive' if variation > 0 else 'negative'` trend.
+- **Amplitude of `{python} f"{amplitude:.2f}"` USD** reflects `{python} 'high' if amplitude > 10 else 'low'` volatility.
+- **Total trading volume** gives insight into market activity.
+
+Note: This basic analysis should be cross-checked with other technical indicators for decision-making.
+
+---
+
+# 📣 Conclusion
+
+We have demonstrated how to automate the creation of a simple, interactive, and online-publishable financial report.
+
+**Potential next improvements**:
+
+- Adding technical indicators (RSI, MACD)
+- Multi-asset analysis
+- Automated deployment via GitHub Pages
+
+**Want to go further?**  
+Subscribe to my newsletter to receive upcoming tutorials and stay informed about the launch of my training on Quarto and report automation.

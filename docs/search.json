@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "report.html",
+    "href": "report.html",
+    "title": "Automated Reporting: Real-Time Bitcoin Analysis with Quarto",
+    "section": "",
+    "text": "In this report, we retrieve real-time Bitcoin (BTC) prices using the Coinbase API and analyze the data with an interactive Candlestick chart.\nThe goal is to automate the generation of clear, replicable, and actionable financial reports."
+  },
+  {
+    "objectID": "report.html#data-retrieval",
+    "href": "report.html#data-retrieval",
+    "title": "Automated Reporting: Real-Time Bitcoin Analysis with Quarto",
+    "section": "🔹 Data Retrieval",
+    "text": "🔹 Data Retrieval\nWe use the requests library to send an HTTP request to the Coinbase Exchange API.\nThe API returns historical Bitcoin price data in JSON format.\nWe then convert it into a pandas DataFrame for easier manipulation: sorting by time, timestamp conversion, and clear column structuring (open, high, low, close, volume).\nThis step prepares the raw data for efficient visualization and analysis.\n\n\nShow code\nimport requests\nimport pandas as pd\nimport plotly.graph_objects as go\nfrom plotly.subplots import make_subplots\nfrom datetime import datetime, timedelta\n\n# Parameters\nproduct_id = 'BTC-USD'\ngranularity = 60  # 1 minute\nend_time = datetime.utcnow()\nstart_time = end_time - timedelta(minutes=10)\n\n# Coinbase API\nurl = f'https://api.exchange.coinbase.com/products/{product_id}/candles'\nparams = {\n    'start': start_time.isoformat(),\n    'end': end_time.isoformat(),\n    'granularity': granularity\n}\n\n# Fetch data\nresponse = requests.get(url, params=params)\ndata = response.json()\n\n# Build DataFrame\ndf = pd.DataFrame(data, columns=['time', 'low', 'high', 'open', 'close', 'volume'])\ndf['time'] = pd.to_datetime(df['time'], unit='s')\ndf.sort_values('time', inplace=True)"
+  },
+  {
+    "objectID": "report.html#interactive-visualization",
+    "href": "report.html#interactive-visualization",
+    "title": "Automated Reporting: Real-Time Bitcoin Analysis with Quarto",
+    "section": "🔹 Interactive Visualization",
+    "text": "🔹 Interactive Visualization\nTo better understand market fluctuations, we create an interactive visualization with plotly.\nA candlestick chart is used to display the price evolution, while a bar chart shows traded volumes.\nWe use make_subplots to overlay both visualizations, sharing the same time axis for easier interpretation.\nThis layout is widely adopted in financial analysis.\n\n\nShow code\nfig = make_subplots(rows=2, cols=1, shared_xaxes=True,\n                    vertical_spacing=0.02,\n                    row_heights=[0.7, 0.3])\n\nfig.add_trace(go.Candlestick(\n    x=df['time'],\n    open=df['open'],\n    high=df['high'],\n    low=df['low'],\n    close=df['close']\n), row=1, col=1)\n\nfig.add_trace(go.Bar(\n    x=df['time'],\n    y=df['volume'],\n    marker_color='LightSkyBlue',\n    name='Volume'\n), row=2, col=1)\n\nfig.update_layout(\n    title='Bitcoin Price Evolution (BTC-USD) over the Last 10 Minutes',\n    xaxis_title='Time',\n    yaxis_title='Price (USD)',\n    xaxis2_title='Time',\n    yaxis2_title='Volume',\n    xaxis_rangeslider_visible=False\n)\n\nfig.show()"
+  },
+  {
+    "objectID": "report.html#macro-trend-analysis",
+    "href": "report.html#macro-trend-analysis",
+    "title": "Automated Reporting: Real-Time Bitcoin Analysis with Quarto",
+    "section": "🔹 Macro Trend Analysis",
+    "text": "🔹 Macro Trend Analysis\nAfter visualizing the data, we conduct a quick descriptive analysis of Bitcoin’s behavior over the observed period.\nWe calculate the percentage variation between the first and last closing prices, the maximum price amplitude, and the total traded volume.\nThis macro-analysis quickly reveals whether the market is trending upward or downward, the level of volatility, and the trading activity.\n\n\nShow code\nstart_price = df.iloc[0]['close']\nend_price = df.iloc[-1]['close']\nvariation = ((end_price - start_price) / start_price) * 100\n\nhigh_price = df['high'].max()\nlow_price = df['low'].min()\namplitude = high_price - low_price\n\ntotal_volume = df['volume'].sum()"
+  }
+]

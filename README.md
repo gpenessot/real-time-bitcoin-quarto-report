@@ -1,102 +1,100 @@
-# 📊 Real-Time Bitcoin Reporting with Quarto & Python
+# 📊 Real-Time Bitcoin Report with Quarto
 
-This project demonstrates how to build a fully automated, real-time report using **Quarto**, **Python**, and **Plotly**, with live data fetched from the **Coinbase API**.
+This project demonstrates how to automate the creation of a real-time, interactive Bitcoin price report using:
 
-You’ll generate a beautiful HTML report showing:
-- A candlestick chart of the last 10 minutes of BTC/USD prices,
-- Volume traded,
-- A quick interpretation of market dynamics.
-
----
-
-## 🚀 Preview
-
-👉 [Live Report Demo](https://gpenessot.github.io/real-time-bitcoin-quarto-report/)  
-*(Optional if deployed via GitHub Pages)*
+- 🐍 **Python** (with [Plotly](https://plotly.com/), `requests`, `pandas`)
+- 📄 **Quarto** for document generation
+- 🌐 **Coinbase API** for real-time data
+- 🚀 **GitHub Pages** for deployment
+- ⚡ **[uv](https://github.com/astral-sh/uv)** as the Python package manager
 
 ---
 
-## 📦 Technologies Used
+## 🔧 Setup Instructions
 
-- [Quarto](https://quarto.org/) – report engine
-- [Python 3](https://www.python.org/)
-- [Pandas](https://pandas.pydata.org/) – data manipulation
-- [Plotly](https://plotly.com/python/) – interactive charts
-- [Coinbase API](https://docs.cloud.coinbase.com/exchange/docs/rest-api) – data source
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/gpenessot/real-time-bitcoin-quarto-report.git
+cd real-time-bitcoin-quarto-report
+```
+
+### 2. Create and activate a virtual environment using `uv`
+
+```bash
+uv venv
+. .venv/Scripts/activate  # On Windows
+# Or:
+source .venv/bin/activate  # On Unix/Mac
+```
+
+### 3. Install dependencies from `pyproject.toml`
+
+```bash
+uv pip install -e .
+```
+
+> This installs all necessary packages including `pandas`, `plotly`, `requests`, and `jupyter` if defined in your `pyproject.toml`.
+
+### 4. Set the Python path for Quarto (temporary in current shell)
+
+```powershell
+$env:QUARTO_PYTHON = "$PWD\.venv\Scripts\python.exe"
+```
+
+On Unix/Mac:
+```bash
+export QUARTO_PYTHON="$PWD/.venv/bin/python"
+```
+
+---
+
+## 🚀 Render the Quarto Report
+
+```bash
+quarto render
+```
+
+This will generate the HTML report inside the `/docs` folder.
+
+---
+
+## 🌍 Deploy on GitHub Pages
+
+1. Push this repo to GitHub
+2. Go to **Settings > Pages**
+3. Select branch `main` and folder `/docs`
+4. Click **Save**
+
+Your live report will be available at:
+```
+https://gpenessot.github.io/real-time-bitcoin-quarto-report/
+```
 
 ---
 
 ## 📁 Project Structure
 
 ```
-├── report.qmd             # Quarto markdown file (main logic)
-├── requirements.txt       # Python dependencies
-└── docs/                  # Output folder for GitHub Pages (optional)
+.
+├── .venv/                  # Virtual environment (not pushed)
+├── report.qmd              # Main Quarto report
+├── pyproject.toml          # Project dependencies
+├── _quarto.yml             # Quarto configuration
+├── docs/                   # Generated HTML for GitHub Pages
+└── README.md
 ```
 
 ---
 
-## 🔧 Installation
+## 🧠 Credits & Acknowledgements
 
-Clone the repo and set up your environment:
+Created by [@gaelpenessot](https://www.linkedin.com/in/gael-penessot/).
 
-```bash
-git clone git@github.com:gpenessot/real-time-bitcoin-quarto-report.git
-cd your-repo-name
-python -m venv venv
-source venv/bin/activate  # or .\venv\Scripts\activate on Windows
-pip install -r requirements.txt
-```
+Data provided by [Coinbase API](https://docs.cloud.coinbase.com/exchange/docs/rest-api)
 
 ---
 
-## ▶️ Render the Report
-
-```bash
-quarto render report.qmd
-```
-
-The report will be generated as `report.html` (or in the `docs/` folder if configured for GitHub Pages).
-
----
-
-## 🌐 Deploy to GitHub Pages (Optional)
-
-1. In `_quarto.yml`, add:
-```yaml
-output-dir: docs
-```
-
-2. In GitHub repo settings, enable Pages on the `main` branch under `/docs`.
-
-3. Push to GitHub and your report will be live!
-
----
-
-## 🧪 Example Output
-
-- Candlestick chart over the last 10 minutes
-- Volume bars
-- Dynamic textual analysis (variation, amplitude, volume)
-- Fully interactive with Plotly
-
----
-
-## 💡 Future Improvements
-
-- Add technical indicators (RSI, MACD)
-- Fetch historical data over longer periods
-- Schedule automatic rebuilds (e.g. with GitHub Actions or cron)
-
----
-
-## 📣 Author
-
-Gaël Penessot – [@gaelpenessot](https://www.linkedin.com/in/gael-penessot/)  
-Content creator and data trainer – Python, SQL, Git & Modern Reporting
-
----
-
-## 📬 Stay Informed
+## 📬 Stay Updated
 
 📩 Subscribe to the [newsletter](https://datagyver.substack.com/subscribe) to get more tutorials like this and updates about the upcoming **Quarto training**.

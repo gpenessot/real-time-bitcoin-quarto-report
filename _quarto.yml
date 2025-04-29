@@ -1,1 +1,14 @@
-output-dir: docs
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Real-Time Bitcoin Report"
+  navbar:
+    left:
+      - text: "Home"
+        href: index.html
+format:
+  html:
+    theme: default
+    toc: true

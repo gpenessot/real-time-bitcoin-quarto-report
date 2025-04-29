@@ -66,7 +66,7 @@ This will generate the HTML report inside the `/docs` folder.
 3. Select branch `main` and folder `/docs`
 4. Click **Save**
 
-Live report will be available at: [https://gpenessot.github.io/real-time-bitcoin-quarto-report/](https://gpenessot.github.io/real-time-bitcoin-quarto-report/)
+For example, my report will be available at: [https://gpenessot.github.io/real-time-bitcoin-quarto-report/](https://gpenessot.github.io/real-time-bitcoin-quarto-report/)
 
 ---
 
